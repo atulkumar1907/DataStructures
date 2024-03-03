@@ -35,6 +35,7 @@ node *buildTree1(int preorder[], int inorder[], int start, int end)
 
     idx++;
     node* nod = new node(curr);
+    
     if(start == end){
         return nod;
     }

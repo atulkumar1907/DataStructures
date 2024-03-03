@@ -8,7 +8,7 @@ class queue{
     void enqueue(int x){
         s.push(x);
     }
-    int pop(){
+    int dequeue(){
         if(s.empty()){
             cout<<"Queue is empty\n";
             exit(0);
@@ -20,7 +20,7 @@ class queue{
             return top;
         }
 
-        int item = pop();
+        int item = dequeue();
         s.push(top);
         return item;
     }
@@ -41,7 +41,7 @@ int main(){
     q.enqueue(3);
     q.enqueue(4);
 
-    cout<<q.pop();
+    cout<<q.dequeue();
 
 
     return 0;
