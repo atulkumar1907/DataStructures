@@ -67,7 +67,7 @@ int bottomUp(int wt[], int val[], int n, int W)
 {
     vector<vector<int>> dp(n, vector<int>(W + 1, -1));
 
-    for (int w = wt[0]; w < W; w++)
+    for (int w = wt[0]; w <= W; w++)
     {
         if (wt[0] <= W)
         {
@@ -81,16 +81,16 @@ int bottomUp(int wt[], int val[], int n, int W)
 
     for (int i = 1; i < n; i++)
     {
-        for (int j = 0; j < W; j++)
+        for (int j = 0; j <= W; j++)
         {
             int include = 0;
-            if (wt[n] <= j)
+            if (wt[i] <= j)
             {
                 include = val[i] + dp[i-1][j-wt[i]];
             }
             int exclude = 0 + dp[i-1][j];
 
-            dp[n][j] = max(include, exclude);
+            dp[i][j] = max(include, exclude);
         }
     }
     return dp[n-1][W];
@@ -101,7 +101,41 @@ int spaceOptimised(int wt[], int val[], int n, int W)
     vector<int> prev(W + 1, 0);
     vector<int> curr(W + 1, 0);
 
-    for (int w = wt[0]; w < W; w++)
+    for (int w = wt[0]; w <= W; w++)
+    {
+        if (wt[0] <= W)
+        {
+            prev[w] = val[0];
+        }
+        else
+        {
+            prev[w] = 0;
+        }
+    }
+
+    for (int i = 1; i < n; i++)
+    {
+        for (int j = 0; j <= W; j++)
+        {
+            int include = 0;
+            if (wt[i] <= j)
+            {
+                include = val[i] + prev[j-wt[i]];
+            }
+            int exclude = 0 + prev[j];
+
+            curr[j] = max(include, exclude);
+        }
+        prev = curr;
+    }
+    return prev[W];
+}
+
+int spaceOptimised2(int wt[], int val[], int n, int W)
+{
+    vector<int> curr(W + 1, 0);
+
+    for (int w = wt[0]; w <= W; w++)
     {
         if (wt[0] <= W)
         {
@@ -115,20 +149,19 @@ int spaceOptimised(int wt[], int val[], int n, int W)
 
     for (int i = 1; i < n; i++)
     {
-        for (int j = 0; j < W; j++)
+        for (int j = W; j >=0; j--)
         {
             int include = 0;
-            if (wt[n] <= j)
+            if (wt[i] <= j)
             {
-                include = val[n] + prev[j-wt[n]];
+                include = val[i] + curr[j-wt[i]];
             }
-            int exclude = 0 + prev[j];
+            int exclude = 0 + curr[j];
 
             curr[j] = max(include, exclude);
         }
-        prev = curr;
     }
-        return prev[W];
+    return curr[W];
 }
 
 int main()
@@ -141,9 +174,11 @@ int main()
 
     vector<vector<int>> dp(n, vector<int>(W + 1, -1));
 
-    cout << recursive(wt, val, n - 1, 5) << endl;
-    cout << topDown(wt, val, n - 1, 5, dp) << endl;
-    cout<<bottomUp(wt, val, n-1, 5)<<endl;
+    cout<<"Recursion: " << recursive(wt, val, n - 1, 5) << endl;
+    cout<<"Memoization: "<<topDown(wt, val, n - 1, 5, dp) << endl;
+    cout<<"Tabulation: "<<bottomUp(wt, val, n-1, 5)<<endl;
+    cout<<"Optimization 1: "<<spaceOptimised(wt, val, n-1, 5)<<endl;
+    cout<<"Optimization 2: "<<spaceOptimised2(wt, val, n-1, 5)<<endl;
 
     return 0;
 }
